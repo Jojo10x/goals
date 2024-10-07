@@ -105,7 +105,7 @@ type RouteHandler = (
 ) => Promise<void>;
 
 // Authentication middleware
-const authenticate: express.RequestHandler = (req, res, next) => {
+const authenticate: express.RequestHandler = (req: express.Request, res: express.Response, next: express.NextFunction) => {
   const authHeader = req.headers.authorization;
   if (!authHeader) {
     res.status(401).json({ error: 'No token provided' });
@@ -123,7 +123,7 @@ const authenticate: express.RequestHandler = (req, res, next) => {
 };
 
 // Signup route
-const signupHandler: RouteHandler = async (req, res, next) => {
+const signupHandler: RouteHandler = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
     const { username, password } = req.body;
     
@@ -144,7 +144,7 @@ const signupHandler: RouteHandler = async (req, res, next) => {
 };
 
 // Login route
-const loginHandler: RouteHandler = async (req, res, next) => {
+const loginHandler: RouteHandler = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
     const { username, password } = req.body;
 
@@ -169,7 +169,7 @@ const loginHandler: RouteHandler = async (req, res, next) => {
 };
 
 // Get goals route
-const getGoalsHandler: RouteHandler = async (req, res, next) => {
+const getGoalsHandler: RouteHandler = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
     const userId = (req as any).userId;
     const goals = await Goal.findAll({ where: { userId } });
@@ -180,7 +180,7 @@ const getGoalsHandler: RouteHandler = async (req, res, next) => {
 };
 
 // Add goal route
-const addGoalHandler: RouteHandler = async (req, res, next) => {
+const addGoalHandler: RouteHandler = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
     const userId = (req as any).userId;
     const { description, deadline } = req.body;
@@ -195,7 +195,7 @@ const addGoalHandler: RouteHandler = async (req, res, next) => {
 };
 
 // Delete goal route
-const deleteGoalHandler: RouteHandler = async (req, res, next) => {
+const deleteGoalHandler: RouteHandler = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
     const userId = (req as any).userId;
     const goalId = parseInt(req.params.id);
@@ -212,7 +212,7 @@ const deleteGoalHandler: RouteHandler = async (req, res, next) => {
 };
 
 // Edit goal route
-const editGoalHandler: RouteHandler = async (req, res, next) => {
+const editGoalHandler: RouteHandler = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
     const userId = (req as any).userId;
     const goalId = parseInt(req.params.id);
@@ -231,7 +231,7 @@ const editGoalHandler: RouteHandler = async (req, res, next) => {
 };
 
 // Complete goal route
-const toggleGoalCompletion: RouteHandler = async (req, res, next) => {
+const toggleGoalCompletion: RouteHandler = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
     const userId = (req as any).userId;
     const goalId = parseInt(req.params.id);
