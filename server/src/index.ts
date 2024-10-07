@@ -51,6 +51,7 @@ User.init({
 
 // Goal model
 class Goal extends Model {
+  [x: string]: any;
   public id!: number;
   public description!: string;
   public userId!: number;
@@ -184,7 +185,10 @@ const addGoalHandler: RouteHandler = async (req, res, next) => {
     const userId = (req as any).userId;
     const { description, deadline } = req.body;
     const goal = await Goal.create({ description, userId, deadline });
-    res.status(201).json(goal);
+    res.status(201).json({
+      ...goal.toJSON(),
+      startTime: goal.createdAt
+    });
   } catch (error) {
     next(error);
   }

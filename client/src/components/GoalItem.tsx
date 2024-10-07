@@ -1,9 +1,9 @@
 import React from "react";
-import { Edit, Trash2, Trophy } from "lucide-react";
 import TimeProgressBar from "./TimeProgressBar";
 import "../module.css";
 
 interface Goal {
+  createdAt: string;
   id: number;
   description: string;
   completed: boolean;
@@ -29,50 +29,37 @@ const GoalItem: React.FC<GoalItemProps> = ({
         goal.completed ? "bg-green-100" : "hover:bg-gray-50"
       }`}
     >
-      <div className="flex justify-between items-start mb-2">
-        <button
-          onClick={() => onToggleCompletion(goal)}
-          className="p-1 -m-1"
-          aria-label={
-            goal.completed ? "Mark as incomplete" : "Mark as complete"
-          }
-        >
-          <Trophy
-            className={`h-6 w-6 ${
-              goal.completed ? "text-yellow-500" : "text-gray-400"
-            }`}
-          />
-        </button>
-        <div className="flex space-x-1">
-          <button
-            onClick={() => onEdit(goal)}
-            className="p-1 text-gray-500 hover:text-indigo-600 transition-colors duration-200"
-            aria-label="Edit goal"
-          >
-            <Edit className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => onDelete(goal.id)}
-            className="p-1 text-gray-500 hover:text-red-600 transition-colors duration-200"
-            aria-label="Delete goal"
-          >
-            <Trash2 className="w-4 h-4" />
-          </button>
-        </div>
-      </div>
-      <p
-        className={`text-sm mb-2 flex-grow ${
+      <h1
+        className={`text-3xl mb-2 flex-grow ${
           goal.completed ? "line-through text-gray-500" : "text-gray-700"
         }`}
       >
         {goal.description}
-      </p>
-      <div className="mt-auto">
+      </h1>
+
+      <div className="mt-auto mb-4">
+        <TimeProgressBar deadline={goal.deadline} startTime={goal.createdAt} />
+      </div>
+      <div className="flex justify-between items-center mb-2">
+        <div className="relative group">
+          <button onClick={() => onToggleCompletion(goal)} className="p-1 text-2xl -m-1">
+            {goal.completed ? (
+              <span className="text-yellow-500 hover:text-green-600 transform hover:scale-110 transition duration-200">
+                ↩️
+              </span>
+            ) : (
+              <span className="text-gray-400 hover:text-green-600 transform hover:scale-110 transition duration-200">
+                ✅
+              </span>
+            )}
+          </button>
+          <span className="absolute bottom-full mb-1 w-max text-xs text-white bg-black px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+            {goal.completed ? "Mark as incomplete" : "Mark as complete"}
+          </span>
+        </div>
         <span
-          className={`inline-block text-xs py-1 px-2 rounded-full mb-2 ${
-            goal.completed
-              ? "bg-green-500 text-white"
-              : "bg-gray-200 text-gray-700"
+          className={`inline-block text-xs py-1 px-2 rounded-full  ${
+            goal.completed ? "bg-green-500 text-white" : " text-gray-700"
           }`}
         >
           {goal.completed ? (
@@ -81,7 +68,32 @@ const GoalItem: React.FC<GoalItemProps> = ({
             <span className="progress-dots">In Progress</span>
           )}
         </span>
-        <TimeProgressBar deadline={goal.deadline} />
+
+        <div className="flex space-x-1">
+          <div className="relative group">
+            <button
+              onClick={() => onEdit(goal)}
+              className="p-1 text-2xl text-gray-500 hover:text-indigo-600 transform hover:scale-110 transition duration-200"
+            >
+              ✏️
+            </button>
+            <span className="absolute bottom-full mb-1 w-max text-xs text-white bg-black px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+              Edit
+            </span>
+          </div>
+
+          <div className="relative group">
+            <button
+              onClick={() => onDelete(goal.id)}
+              className="p-1 text-2xl text-gray-500 hover:text-red-600 transform hover:scale-110 transition duration-200"
+            >
+              🗑️
+            </button>
+            <span className="absolute bottom-full mb-1 w-max text-xs text-white bg-black px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+              Delete
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );

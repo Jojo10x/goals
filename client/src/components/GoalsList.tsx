@@ -53,8 +53,8 @@ const GoalsList: React.FC = () => {
   });
 
   return (
-    <div className="container mx-auto  py-8 max-w-7xl">
-      <div className=" shadow-lg rounded-2xl flex flex-row items-center justify-center flex-wrap md:flex-nowrap md:flex-row">
+    <div className="container mx-auto py-8 max-w-7xl">
+      <div className="flex flex-row items-center justify-center flex-wrap md:flex-nowrap md:flex-row">
         <div className="p-4">
           <GoalProgress goals={goals} />
         </div>
@@ -67,11 +67,17 @@ const GoalsList: React.FC = () => {
           />
         </div>
         <div className="p-4">
-          <AddGoalForm onAddGoal={addGoal} showSnackbar={showSnackbar} />
+          <AddGoalForm
+            onAddGoal={async (description, timeFrame) => {
+              const newGoal = await addGoal(description, timeFrame);
+              return newGoal !== null;
+            }}
+            showSnackbar={showSnackbar}
+          />
         </div>
       </div>
 
-      <div className=" shadow-lg rounded-2xl p-6">
+      <div className="shadow-lg rounded-2xl p-6">
         {isLoading ? (
           <div className="animate-pulse h-2 bg-indigo-300 rounded-full" />
         ) : (
