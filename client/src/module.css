@@ -63,3 +63,21 @@
 .animate-fadeIn {
   animation: fadeInQoutes 1.5s ease-in-out forwards;
 }
+
+
+.eighties-rad {
+  -webkit-text-stroke: 2px black;
+  font-variation-settings: "wght" 900, "ital" 1;
+  font-size: 3vw;
+  text-align: center;
+  color: transparent;
+  font-family: "Meta", sans-serif;
+  text-shadow: 
+    5px 5px 0px #07bccc,
+    10px 10px 0px #e601c0,
+    15px 15px 0px #e9019a,
+    20px 20px 0px #f40468,
+    30px 30px 10px rgba(0,0,0,.2);
+}
+
+

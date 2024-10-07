@@ -7,6 +7,7 @@ import { LogOut } from "lucide-react";
 import "./App.css";
 import SnackbarMessage from "./components/SnackbarMessage";
 import Quotes from "./components/Quotes";
+import "./module.css"
 
 interface ErrorResponse {
   details: string;
@@ -120,7 +121,7 @@ const App: React.FC = () => {
     <div className="bg-gradient-to-b from-blue-200 to-purple-300 p-3 min-h-screen ">
       {isLoggedIn && (
         <header className="flex justify-between items-center ">
-          <h1 className="text-4xl font-bold text-gray-800">Goals</h1>
+          <h1 className="eighties-rad">Goals</h1>
           <button
             className="flex items-center bg-red-500 text-white py-2 px-4 rounded shadow-md hover:bg-red-600 transition duration-300"
             onClick={handleLogout}
