@@ -1,17 +1,13 @@
 {
-    "compilerOptions": {
-      "target": "es2017",
-      "module": "commonjs",
-      "outDir": "./dist",
-      "rootDir": "./src",
-      "strict": true,
-      "esModuleInterop": true,
-      "skipLibCheck": true,
-      "forceConsistentCasingInFileNames": true,
-      "experimentalDecorators": true,
-      "emitDecoratorMetadata": true,
-      "types": ["node"]
-    },
-    "include": ["src/**/*", "index.ts"],
-    "exclude": ["node_modules"]
-  }
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "rootDir": "./",  
+    "outDir": "./dist",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  },
+  "include": ["*.ts"], 
+  "exclude": ["node_modules"]
+}
