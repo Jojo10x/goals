@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -95,33 +104,33 @@ const authenticate = (req, res, next) => {
     }
 };
 // Signup route
-const signupHandler = async (req, res, next) => {
+const signupHandler = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { username, password } = req.body;
-        const existingUser = await User.findOne({ where: { username } });
+        const existingUser = yield User.findOne({ where: { username } });
         if (existingUser) {
             res.status(400).json({ error: 'Username already exists' });
             return;
         }
-        const hashedPassword = await bcrypt_1.default.hash(password, 10);
-        const user = await User.create({ username, password: hashedPassword });
+        const hashedPassword = yield bcrypt_1.default.hash(password, 10);
+        const user = yield User.create({ username, password: hashedPassword });
         const token = jsonwebtoken_1.default.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });
         res.status(201).json({ message: 'User created successfully', token });
     }
     catch (error) {
         next(error);
     }
-};
+});
 // Login route
-const loginHandler = async (req, res, next) => {
+const loginHandler = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { username, password } = req.body;
-        const user = await User.findOne({ where: { username } });
+        const user = yield User.findOne({ where: { username } });
         if (!user) {
             res.status(400).json({ error: 'Invalid credentials' });
             return;
         }
-        const isPasswordValid = await bcrypt_1.default.compare(password, user.password);
+        const isPasswordValid = yield bcrypt_1.default.compare(password, user.password);
         if (!isPasswordValid) {
             res.status(400).json({ error: 'Invalid credentials' });
             return;
@@ -132,84 +141,84 @@ const loginHandler = async (req, res, next) => {
     catch (error) {
         next(error);
     }
-};
+});
 // Get goals route
-const getGoalsHandler = async (req, res, next) => {
+const getGoalsHandler = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userId = req.userId;
-        const goals = await Goal.findAll({ where: { userId } });
+        const goals = yield Goal.findAll({ where: { userId } });
         res.json(goals);
     }
     catch (error) {
         next(error);
     }
-};
+});
 // Add goal route
-const addGoalHandler = async (req, res, next) => {
+const addGoalHandler = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userId = req.userId;
         const { description, deadline } = req.body;
-        const goal = await Goal.create({ description, userId, deadline });
+        const goal = yield Goal.create({ description, userId, deadline });
         res.status(201).json(Object.assign(Object.assign({}, goal.toJSON()), { startTime: goal.createdAt }));
     }
     catch (error) {
         next(error);
     }
-};
+});
 // Delete goal route
-const deleteGoalHandler = async (req, res, next) => {
+const deleteGoalHandler = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userId = req.userId;
         const goalId = parseInt(req.params.id);
-        const goal = await Goal.findOne({ where: { id: goalId, userId } });
+        const goal = yield Goal.findOne({ where: { id: goalId, userId } });
         if (!goal) {
             res.status(404).json({ error: 'Goal not found' });
             return;
         }
-        await goal.destroy();
+        yield goal.destroy();
         res.json({ message: 'Goal deleted successfully' });
     }
     catch (error) {
         next(error);
     }
-};
+});
 // Edit goal route
-const editGoalHandler = async (req, res, next) => {
+const editGoalHandler = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userId = req.userId;
         const goalId = parseInt(req.params.id);
         const { description } = req.body;
-        const goal = await Goal.findOne({ where: { id: goalId, userId } });
+        const goal = yield Goal.findOne({ where: { id: goalId, userId } });
         if (!goal) {
             res.status(404).json({ error: 'Goal not found' });
             return;
         }
         goal.description = description;
-        await goal.save();
+        yield goal.save();
         res.json(goal);
     }
     catch (error) {
         next(error);
     }
-};
+});
 // Complete goal route
-const toggleGoalCompletion = async (req, res, next) => {
+const toggleGoalCompletion = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userId = req.userId;
         const goalId = parseInt(req.params.id);
-        const goal = await Goal.findOne({ where: { id: goalId, userId } });
+        const goal = yield Goal.findOne({ where: { id: goalId, userId } });
         if (!goal) {
             res.status(404).json({ error: 'Goal not found' });
             return;
         }
         goal.completed = !goal.completed;
-        await goal.save();
+        yield goal.save();
         res.json(goal);
     }
     catch (error) {
         next(error);
     }
-};
+});
 // Routes
 app.post('/api/auth/signup', signupHandler);
 app.post('/api/auth/login', loginHandler);
