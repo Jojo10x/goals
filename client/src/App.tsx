@@ -50,10 +50,12 @@ const App: React.FC = () => {
     }
   }, []);
 
+  const apiUrl = "https://goalserver-fgae.onrender.com";
+
   const handleLogin = async (username: string, password: string) => {
     try {
       const response = await axios.post(
-        "http://localhost:5007/api/auth/login",
+        `${apiUrl}/api/auth/login`,
         { username, password }
       );
       localStorage.setItem("token", response.data.token);
@@ -72,7 +74,7 @@ const App: React.FC = () => {
   const handleSignup = async (username: string, password: string) => {
     try {
       const response = await axios.post(
-        "http://localhost:5007/api/auth/signup",
+        `${apiUrl}/api/auth/signup`,
         { username, password }
       );
       localStorage.setItem("token", response.data.token);

@@ -25,6 +25,7 @@ const port = process.env.PORT || 5007;
 // Middleware
 app.use((0, cors_1.default)());
 app.use(body_parser_1.default.json());
+app.use((0, cors_1.default)({ origin: ['https://goals-zgaf.onrender.com/'], credentials: true }));
 // Database connection
 const sequelize = new sequelize_1.Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
     host: process.env.DB_HOST,
