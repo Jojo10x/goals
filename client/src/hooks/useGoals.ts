@@ -3,7 +3,7 @@ import axios from 'axios';
 import { Goal } from '../types/types';
 import { calculateDeadline } from '../utils/dateUtils';
 
-const API_BASE_URL = 'https://goalserver-fgae.onrender.com';
+const API_BASE_URL = 'https://goalserver-fgae.onrender.com/api';
 
 export const useGoals = () => {
     const [goals, setGoals] = useState<Goal[]>([]);
