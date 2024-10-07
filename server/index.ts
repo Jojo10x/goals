@@ -26,7 +26,13 @@ const sequelize = new Sequelize(
     dialect: 'postgres',
   }
 );
-
+sequelize.authenticate()
+  .then(() => {
+    console.log('Connection to the database has been established successfully.');
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+  });
 // User model
 class User extends Model {
   public id!: number;

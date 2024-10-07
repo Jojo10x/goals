@@ -31,6 +31,13 @@ const sequelize = new sequelize_1.Sequelize(process.env.DB_NAME, process.env.DB_
     port: parseInt(process.env.DB_PORT, 10),
     dialect: 'postgres',
 });
+sequelize.authenticate()
+    .then(() => {
+    console.log('Connection to the database has been established successfully.');
+})
+    .catch(err => {
+    console.error('Unable to connect to the database:', err);
+});
 // User model
 class User extends sequelize_1.Model {
 }
