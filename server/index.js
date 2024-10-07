@@ -16,7 +16,7 @@ const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const cors_1 = __importDefault(require("cors"));
 const sequelize_1 = require("sequelize");
-const bcrypt_1 = __importDefault(require("bcrypt"));
+const argon2_1 = __importDefault(require("argon2"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
@@ -112,7 +112,7 @@ const signupHandler = (req, res, next) => __awaiter(void 0, void 0, void 0, func
             res.status(400).json({ error: 'Username already exists' });
             return;
         }
-        const hashedPassword = yield bcrypt_1.default.hash(password, 10);
+        const hashedPassword = yield argon2_1.default.hash(password);
         const user = yield User.create({ username, password: hashedPassword });
         const token = jsonwebtoken_1.default.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });
         res.status(201).json({ message: 'User created successfully', token });
@@ -130,7 +130,7 @@ const loginHandler = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
             res.status(400).json({ error: 'Invalid credentials' });
             return;
         }
-        const isPasswordValid = yield bcrypt_1.default.compare(password, user.password);
+        const isPasswordValid = yield argon2_1.default.verify(user.password, password);
         if (!isPasswordValid) {
             res.status(400).json({ error: 'Invalid credentials' });
             return;
