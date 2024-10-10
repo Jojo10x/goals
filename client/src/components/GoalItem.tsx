@@ -25,9 +25,14 @@ const GoalItem: React.FC<GoalItemProps> = ({
 }) => {
   return (
     <div
-      className={`flex flex-col p-4 rounded-lg shadow-md transition-colors bg-white  h-full lg:w-72 ${
-        goal.completed ? "bg-green-100" : "hover:bg-gray-50"
+      className={`flex flex-col p-4 rounded-lg shadow-md transition-colors h-full lg:w-72 ${
+        !goal.completed ? "bg-white hover:bg-gray-50" : ""
       }`}
+      style={{
+        background: goal.completed
+          ? "linear-gradient(90deg, #34D399, #059669)"
+          : "",
+      }}
     >
       <h1
         className={`text-3xl mb-2 flex-grow ${
@@ -42,7 +47,10 @@ const GoalItem: React.FC<GoalItemProps> = ({
       </div>
       <div className="flex justify-between items-center mb-2">
         <div className="relative group">
-          <button onClick={() => onToggleCompletion(goal)} className="p-1 text-2xl -m-1">
+          <button
+            onClick={() => onToggleCompletion(goal)}
+            className="p-1 text-2xl -m-1"
+          >
             {goal.completed ? (
               <span className="text-yellow-500 hover:text-green-600 transform hover:scale-110 transition duration-200">
                 ↩️
@@ -59,7 +67,7 @@ const GoalItem: React.FC<GoalItemProps> = ({
         </div>
         <span
           className={`inline-block text-xs py-1 px-2 rounded-full  ${
-            goal.completed ? "bg-green-500 text-white" : " text-gray-700"
+            goal.completed ? "bg-white text-green-700" : "text-gray-700 bg-gray-200"
           }`}
         >
           {goal.completed ? (
