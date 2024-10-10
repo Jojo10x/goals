@@ -4,7 +4,6 @@
 }
 
 .completed-animation {
-  display: inline-block;
   animation: bounce 0.5s forwards, fadeIn 0.5s forwards;
 }
 
