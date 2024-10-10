@@ -13,7 +13,6 @@ interface GoalFiltersProps {
 const GoalFilters: React.FC<GoalFiltersProps> = ({
   activeFilter,
   onFilterChange,
-  timeFrame,
   onTimeFrameChange,
 }) => {
   return (
@@ -43,7 +42,7 @@ const GoalFilters: React.FC<GoalFiltersProps> = ({
 
       {activeFilter === "byDate" && (
         <div className="flex items-center justify-center">
-          <TimeFrameSelector value={timeFrame} onChange={onTimeFrameChange} />
+          <TimeFrameSelector  onChange={onTimeFrameChange} />
         </div>
       )}
     </div>
