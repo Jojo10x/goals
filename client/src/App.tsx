@@ -47,6 +47,8 @@ const App: React.FC = () => {
     const token = localStorage.getItem("token");
     if (token) {
       setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
     }
   }, []);
 
