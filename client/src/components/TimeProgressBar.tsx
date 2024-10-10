@@ -19,13 +19,13 @@ const TimeProgressBar: React.FC<TimeProgressBarProps> = ({
       const deadlineTime = new Date(propDeadline).getTime();
       const startTime = new Date(propStartTime).getTime();
 
-      console.log("Debug:", {
-        now,
-        deadlineTime,
-        startTime,
-        propDeadline,
-        propStartTime,
-      });
+      // console.log("", {
+      //   now,
+      //   deadlineTime,
+      //   startTime,
+      //   propDeadline,
+      //   propStartTime,
+      // });
 
       if (isNaN(deadlineTime) || isNaN(startTime)) {
         setError(
