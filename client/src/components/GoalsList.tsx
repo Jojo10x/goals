@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useGoals } from "../hooks/useGoals";
 import { useSnackbar } from "../hooks/useSnackbar";
 import { Goal } from "../types/types";
@@ -23,7 +23,7 @@ const GoalsList: React.FC = () => {
   const { snackbar, showSnackbar } = useSnackbar();
 
   const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
-  const [activeFilter, setActiveFilter] = useState<FilterType>("all");
+  const [activeFilter, setActiveFilter] = useState<FilterType>("current");
   const [timeFrame, setTimeFrame] = useState("1w");
 
   const handleEditGoal = (updatedGoal: Goal) => {
@@ -35,22 +35,30 @@ const GoalsList: React.FC = () => {
     setActiveFilter(filter);
   };
 
-  const filteredGoals = goals.filter((goal) => {
-    switch (activeFilter) {
-      case "current":
-        return !goal.completed;
-      case "completed":
-        return goal.completed;
-      case "byDate": {
-        const deadlineDate = new Date(calculateDeadline(timeFrame));
-        const goalDate = new Date(goal.deadline);
-        return goalDate <= deadlineDate;
+  const filteredAndSortedGoals = useMemo(() => {
+    const filtered = goals.filter((goal) => {
+      switch (activeFilter) {
+        case "current":
+          return !goal.completed;
+        case "completed":
+          return goal.completed;
+        case "byDate": {
+          const deadlineDate = new Date(calculateDeadline(timeFrame));
+          const goalDate = new Date(goal.deadline);
+          return goalDate <= deadlineDate;
+        }
+        case "all":
+        default:
+          return true;
       }
-      case "all":
-      default:
-        return true;
-    }
-  });
+    });
+
+    return filtered.sort((a, b) => {
+      const dateA = new Date(a.deadline);
+      const dateB = new Date(b.deadline);
+      return dateA.getTime() - dateB.getTime();
+    });
+  }, [goals, activeFilter, timeFrame]);
 
   return (
     <div className="container mx-auto py-8 max-w-7xl">
@@ -82,7 +90,7 @@ const GoalsList: React.FC = () => {
           <div className="animate-pulse h-2 bg-indigo-300 rounded-full" />
         ) : (
           <GoalList
-            goals={filteredGoals}
+            goals={filteredAndSortedGoals}
             onToggleCompletion={toggleGoalCompletion}
             onDelete={deleteGoal}
             onEdit={setEditingGoal}
