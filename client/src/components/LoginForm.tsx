@@ -1,18 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { User } from 'lucide-react';
 
 interface LoginFormProps {
-  onLogin: (username: string, password: string) => void;
+  onLogin: (username: string, password: string) => Promise<void>;
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = useCallback(async (event: React.FormEvent) => {
     event.preventDefault();
-    onLogin(username, password);
-  };
+    setIsLoading(true);
+    try {
+      await onLogin(username, password);
+    } catch (error) {
+      console.error('Login error:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [username, password, onLogin]);
 
   return (
     <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
@@ -51,8 +59,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
       <button
         type="submit"
         className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition duration-300"
+        disabled={isLoading}
       >
-        Login
+        {isLoading ? 'Logging in...' : 'Login'}
       </button>
     </form>
   );
