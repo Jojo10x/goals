@@ -23,7 +23,7 @@ const GoalsList: React.FC = () => {
   const { snackbar, showSnackbar } = useSnackbar();
 
   const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
-  const [activeFilter, setActiveFilter] = useState<FilterType>("all");
+  const [activeFilter, setActiveFilter] = useState<FilterType>("current");
   const [timeFrame, setTimeFrame] = useState("1w");
 
   const handleEditGoal = (updatedGoal: Goal) => {
