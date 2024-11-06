@@ -18,12 +18,13 @@ app.use(cors({ origin: ['https://goals-zgaf.onrender.com/'], credentials: true }
 
 // Database connection
 const sequelize = new Sequelize(
-  process.env.DB_NAME!,
-  process.env.DB_USER!,
-  process.env.DB_PASSWORD!, 
+  process.env.DATABASE_URL!,
+  // process.env.DB_NAME!,
+  // process.env.DB_USER!,
+  // process.env.DB_PASSWORD!, 
   {
-    host: process.env.DB_HOST,
-    port: parseInt(process.env.DB_PORT!, 10),
+    // host: process.env.DB_HOST,
+    // port: parseInt(process.env.DB_PORT!, 10),
     dialect: 'postgres',
   }
 );
