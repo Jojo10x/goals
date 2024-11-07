@@ -35,7 +35,7 @@ const GoalItem: React.FC<GoalItemProps> = ({
       }}
     >
       <h1
-        className={`text-3xl mb-2 flex-grow ${
+        className={`text-3xl mb-2 flex-grow break-words ${
           goal.completed ? "line-through text-gray-500" : "text-gray-700"
         }`}
       >
