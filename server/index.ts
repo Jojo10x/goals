@@ -4,7 +4,11 @@ import cors from 'cors';
 import { Sequelize, DataTypes, Model } from 'sequelize';
 import argon2 from 'argon2';
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto'; 
 import dotenv from 'dotenv';
+import { OAuth2Client } from 'google-auth-library';
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 dotenv.config();
 
@@ -14,7 +18,20 @@ const port = process.env.PORT || 5007;
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
-app.use(cors({ origin: ['https://goals-zgaf.onrender.com/'], credentials: true })); 
+app.use(cors({
+  origin: [
+    'https://goals-zgaf.onrender.com',
+    'http://localhost:5173',
+    'http://localhost:3000'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
+}));
+app.options('*', cors());
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
 
 // Database connection
 const sequelize = new Sequelize(
@@ -151,6 +168,70 @@ const signupHandler: RouteHandler = async (req: express.Request, res: express.Re
   }
 };
 
+//google signup
+
+const googleLoginHandler: RouteHandler = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { credential } = req.body;
+    
+    if (!credential) {
+      res.status(400).json({ error: 'No credential provided' });
+      return;
+    }
+
+    console.log('Received credential:', credential.substring(0, 20) + '...');
+
+    const ticket = await client.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID
+    }).catch(error => {
+      console.error('Token verification error:', error);
+      throw new Error('Invalid token');
+    });
+    
+    const payload = ticket.getPayload();
+    if (!payload || !payload.email) {
+      res.status(401).json({ error: 'Invalid credentials - no payload or email' });
+      return;
+    }
+
+    console.log('Google auth successful for email:', payload.email);
+
+    // Find or create user
+    let user = await User.findOne({ where: { username: payload.email } });
+    
+    if (!user) {
+      console.log('Creating new user for:', payload.email);
+      user = await User.create({
+        username: payload.email,
+        password: await argon2.hash(crypto.randomBytes(32).toString('hex'))
+      });
+    }
+
+    const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });
+    
+    res.json({ 
+      message: 'Google login successful',
+      token,
+      username: user.username
+    });
+  } catch (error) {
+    console.error('Google login error:', error);
+    res.status(401).json({ 
+      error: 'Authentication failed',
+      details: process.env.NODE_ENV === 'development' ? (error as Error).message : undefined
+    });
+  }
+};
+// Add better error handling middleware
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  console.error('Server error:', err);
+  res.status(500).json({ 
+    error: 'Internal server error',
+    details: process.env.NODE_ENV === 'development' ? err.message : undefined
+  });
+});
+
 // Login route
 const loginHandler: RouteHandler = async (req: express.Request, res: express.Response, next: express.NextFunction) => {
   try {
@@ -259,6 +340,7 @@ const toggleGoalCompletion: RouteHandler = async (req: express.Request, res: exp
 // Routes
 app.post('/api/auth/signup', signupHandler);
 app.post('/api/auth/login', loginHandler);
+app.post('/api/auth/google-login', googleLoginHandler);
 app.get('/api/goals', authenticate, getGoalsHandler);
 app.post('/api/goals', authenticate, addGoalHandler);
 app.delete('/api/goals/:id', authenticate, deleteGoalHandler);
