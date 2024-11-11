@@ -8,6 +8,7 @@ import "./App.css";
 import SnackbarMessage from "./components/SnackbarMessage";
 import Quotes from "./components/Quotes";
 import "./module.css"
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 interface ErrorResponse {
   details: string;
@@ -121,7 +122,60 @@ const App: React.FC = () => {
     setSnackbarOpen(false);
   };
 
+  const handleGoogleLogin = async (credential: string) => {
+    
+    console.log('Starting Google login process...');
+    try {
+      const healthCheck = await axios.get('google-login/api/health');
+      console.log('Health check passed:', healthCheck.status);
+    
+      const response = await axios.post(
+        `${apiUrl}/api/auth/google-login`,
+        { credential },
+        { headers: { 'Content-Type': 'application/json' }, timeout: 20000, withCredentials: true }
+      );
+      console.log('Login response received:', response.status);
+      
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token);
+        setIsLoggedIn(true);
+        setSnackbarMessage("Google login successful!");
+        setSnackbarSeverity("success");
+      } else {
+        throw new Error('No token received from server');
+      }
+    } catch (error) {
+      console.error('Detailed Google login error:', error);
+      let errorMessage = "Login failed. ";
+      
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError;
+        if (axiosError.code === 'ERR_NETWORK') {
+          errorMessage += "Cannot connect to server. Please check your internet connection.";
+        } else if (axiosError.response) {
+          errorMessage += axiosError.response.data || axiosError.message;
+        } else if (axiosError.request) {
+          errorMessage += "No response from server. Please try again later.";
+        } else {
+          errorMessage += axiosError.message;
+        }
+      } else {
+        errorMessage += (error as Error).message;
+      }
+    
+      setSnackbarMessage(errorMessage);
+      setSnackbarSeverity("error");
+    } finally {
+      setSnackbarOpen(true);
+    }
+    
+  };
+
   return (
+    <GoogleOAuthProvider 
+    clientId="636822639975-sck2gvemmolnq047c2h301jt94lpb14f.apps.googleusercontent.com"
+    onScriptLoadError={() => console.error('Google Script failed to load')}
+  >
     <div className="bg-gradient-to-b from-blue-200 to-purple-300 p-3 min-h-screen ">
       {isLoggedIn && (
         <header className="flex justify-between items-center ">
@@ -160,7 +214,7 @@ const App: React.FC = () => {
               </CustomButton>
             </div>
             {isLogin ? (
-              <LoginForm onLogin={handleLogin} />
+              <LoginForm onLogin={handleLogin} onGoogleLogin={handleGoogleLogin} />
             ) : (
               <SignupForm onSignup={handleSignup} />
             )}
@@ -175,6 +229,7 @@ const App: React.FC = () => {
         />
       </div>
     </div>
+    </GoogleOAuthProvider>
   );
 };
 
