@@ -1,10 +1,11 @@
 import React, { useState, useCallback } from 'react';
 import { User } from 'lucide-react';
 import { GoogleLogin } from '@react-oauth/google';
+import { CredentialResponse } from '@react-oauth/google';
 
 interface LoginFormProps {
   onLogin: (username: string, password: string) => Promise<void>;
-  onGoogleLogin: (token: string) => Promise<void>;
+  onGoogleLogin: (credentialResponse: CredentialResponse) => Promise<void>;
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onGoogleLogin }) => {
@@ -72,7 +73,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin, onGoogleLogin }) => {
           <GoogleLogin
             onSuccess={(credentialResponse) => {
               if (credentialResponse.credential) {
-                onGoogleLogin(credentialResponse.credential);
+                onGoogleLogin(credentialResponse);
               }
             }}
             onError={() => {

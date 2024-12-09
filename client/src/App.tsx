@@ -9,6 +9,7 @@ import SnackbarMessage from "./components/SnackbarMessage";
 import Quotes from "./components/Quotes";
 import "./module.css"
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import { CredentialResponse } from '@react-oauth/google';
 import Goals from '../src/assets/big-logo-called---goals.svg'
 
 interface ErrorResponse {
@@ -123,7 +124,7 @@ const App: React.FC = () => {
     setSnackbarOpen(false);
   };
 
-  const handleGoogleLogin = async (credential: string) => {
+  const handleGoogleLogin = async (credentialResponse: CredentialResponse) => {
     
     console.log('Starting Google login process...');
     try {
@@ -132,7 +133,7 @@ const App: React.FC = () => {
     
       const response = await axios.post(
         `${apiUrl}/api/auth/google-login`,
-        { credential },
+        { credential: credentialResponse.credential },
         { headers: { 'Content-Type': 'application/json' }, timeout: 20000, withCredentials: true }
       );
       console.log('Login response received:', response.status);
