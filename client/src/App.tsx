@@ -9,6 +9,7 @@ import SnackbarMessage from "./components/SnackbarMessage";
 import Quotes from "./components/Quotes";
 import "./module.css"
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import Goals from '../src/assets/big-logo-called---goals.svg'
 
 interface ErrorResponse {
   details: string;
@@ -179,7 +180,8 @@ const App: React.FC = () => {
     <div className="bg-gradient-to-b from-blue-200 to-purple-300 p-3 min-h-screen ">
       {isLoggedIn && (
         <header className="flex justify-between items-center ">
-          <h1 className="eighties-rad">Goals</h1>
+          {/* <h1 className="eighties-rad">Goals</h1> */}
+          <img className="eighties-img" src={Goals} alt="" />
           <button
             className="flex items-center bg-red-500 text-white py-2 px-4 rounded shadow-md hover:bg-red-600 transition duration-300"
             onClick={handleLogout}

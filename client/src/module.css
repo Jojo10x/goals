@@ -64,6 +64,7 @@
 }
 
 
+
 .eighties-rad {
   -webkit-text-stroke: 2px black;
   font-variation-settings: "wght" 900, "ital" 1;
@@ -77,6 +78,15 @@
     15px 15px 0px #e9019a,
     20px 20px 0px #f40468,
     30px 30px 10px rgba(0,0,0,.2);
+}
+.eighties-img {
+  width: 40%; 
+}
+
+@media (min-width: 768px) {
+  .eighties-img {
+    width: 10%;
+  }
 }
 
 
